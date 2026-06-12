@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+issue_json=$(gh issue view "$1" --json title,number)
+branch_name="$(echo "$issue_json" | jq -r '"\(.number)_\(.title)"' | tr '[:upper:]' '[:lower:]' | sed 's, ,_,g' | sed 's/[^[:alnum:]_]//g')"
+branch="feature/$branch_name"
+
+if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+ # Branch already exists upstream (e.g. re-running gh-start, or someone
+ # else started it) — gh issue develop's createLinkedBranch mutation
+ # can't create a ref that's already there, so just check it out instead.
+ git fetch origin "$branch"
+ git switch -c "$branch" --track "origin/$branch"
+else
+  base=$(git symbolic-ref refs/remotes/origin/HEAD --short | sed 's,origin/,,')
+ gh issue develop "$1" --base "$base" -c -n "$branch"
+fi
+
+gh issue edit "$1" --add-assignee "@me"  
