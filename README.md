@@ -23,8 +23,7 @@ Example: issue `42` titled "Fix Login Bug!" gives `feature/42_fix_login_bug`.
 ## Installation
 
 ```sh
-chmod +x gh-start
-ln -s "$PWD/gh-start" ~/.local/bin/gh-start   # any directory on your PATH
+gh extension install rawnly/gh-start
 ```
 
 ## Usage
@@ -32,7 +31,7 @@ ln -s "$PWD/gh-start" ~/.local/bin/gh-start   # any directory on your PATH
 Run from inside a clone of the repository:
 
 ```sh
-gh-start <issue-number>
+gh start <issue-number>
 ```
 
 ## Development
